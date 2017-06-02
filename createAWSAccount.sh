@@ -1,4 +1,7 @@
 #!/bin/bash
+# Author: Max Keiper
+# Version: 1.0
+# Purpose: This script will allow you to select a presetup AWS profile and query, create, delete IAM accounts.
 
 clear
 echo "Which AWS profile do you want to use(max,pmmax,pmmaxgov):"
@@ -30,18 +33,21 @@ select menuChoice in "${options[@]}"
 do
 	case $menuChoice in
       "1. List Users/Get User Info")
-        echo "Do you want to list all users(y) or search(n):"
+        echo "Do you want to (1)list all users or (2)exact search or (3)wild card search:"
         read choice
-        if [ $choice == 'y' ]; then
+        if [ $choice == '1' ]; then
         	echo "Listing all users:"
 					echo "------------------"
 					aws iam list-users --profile $awsProfile
-				else
-					#CREATE A LOOP TO SEARCH FOR MORE THAN 1 USER SAVE USER INFO TO VARIABLE?
+				elif [ $choice == '2' ]; then
 					echo "Enter the username you want to search for:"
 					read uname
 					aws iam get-user --profile $awsProfile --user-name $uname
 					echo
+				elif  [ $choice == '3' ]; then
+				  echo "Enter the username you want to search for:"
+					read uname
+					aws iam list-users --profile $awsProfile | grep "$uname"
 				fi  
       ;; 		
 		"2. Create a new user")
