@@ -23,11 +23,17 @@ fi
 # echo $AWS_DEFAULT_OUTPUT
 clear
 
-options=("1. List Users/Get User Info" "2. Create a new user" "3. Delete a user" "4. Add Console access to a existing user" "4. Add CLI access to an existing user" 
-"6. Write user info to file and encrypt." 
-"Quit")
+options=(
+	"List Users/Get User Info"
+	"Create a new user"
+	"Delete a user"
+	"Add Console access to a existing user"
+	"Add CLI access to an existing user" 
+	"Write user info to file and encrypt." 
+	"Quit"
+)
 
-echo "			MAIN MENU			"
+echo "	AWS UAC MAIN MENU			"
 echo "------------------------------------------------------"
 select menuChoice in "${options[@]}"
 do
