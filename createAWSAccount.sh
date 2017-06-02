@@ -9,17 +9,30 @@ read awsProfile
 echo
 clear
 
-echo "What type of output do you want(num)? (1.Text, 2.JSON, 3. Table)?"
-read uType
-if [ "$uType" == '1' ]; then
-	export AWS_DEFAULT_OUTPUT="text"    
-elif [ "$uType" == '2' ]; then
-	export AWS_DEFAULT_OUTPUT="json"
-elif [ "$uType" == '3' ]; then
-  export AWS_DEFAULT_OUTPUT="table"
-else
-	exit
-fi
+echo "What type of output?"
+outOptions=(
+	"Text"
+	".JSON" 
+	"Table"
+)
+select outMenuChoice in "${outOptions[@]}"
+do
+ case $outMenuChoice in
+	"Text")
+		export AWS_DEFAULT_OUTPUT="text"
+		break
+	;;
+	".JSON")
+		export AWS_DEFAULT_OUTPUT="json"
+		break
+	;;
+	"Table")
+  	export AWS_DEFAULT_OUTPUT="table"
+		break
+	;;
+	*)echo Invalid Option;;
+ esac
+done
 # echo $AWS_DEFAULT_OUTPUT
 clear
 
@@ -38,7 +51,7 @@ echo "------------------------------------------------------"
 select menuChoice in "${options[@]}"
 do
 	case $menuChoice in
-      "1. List Users/Get User Info")
+      "List Users/Get User Info")
         echo "Do you want to (1)list all users or (2)exact search or (3)wild card search:"
         read choice
         if [ $choice == '1' ]; then
@@ -56,14 +69,14 @@ do
 					aws iam list-users --profile $awsProfile | grep "$uname"
 				fi  
       ;; 		
-		"2. Create a new user")
+		"Create a new user")
 			echo "Enter the User Name you want to create:"
 			read uname
 			echo
 			createOutput=$(aws iam create-user --user-name "$uname" --profile "$awsProfile")
 			echo "$createOutput"
 		;;
-		"3. Delete a user")
+		"Delete a user")
       echo "Enter the User Name you want to delete(no output = success)":
       read uname
 			aws iam list-access-keys --user-name "$uname" --profile "$awsProfile"
@@ -86,19 +99,19 @@ do
 				fi
 			fi
 		;;
-		"4. Add Console access to a existing user")
+		"Add Console access to a existing user")
 			echo "Enter the User Name you want to add Console access to:"
 			read uname
 			echo "Enter the password, make sure it is complex:"
       read upassword
       conOutput=$(aws iam create-login-profile --user-name "$uname" --password "$upassword" --password-reset-required --profile "$awsProfile")
 		;;
-		"5. Add CLI access to an existing user")
+		"Add CLI access to an existing user")
 			echo "Enter the User Name you want to add CLI/Programatic access to:"
 			read uname
 			progOutput=$(aws iam create-access-key --user-name "$uname" --profile "$awsProfile")
 		;;
-    "6. Write user info to file and encrypt.")
+    "Write user info to file and encrypt.")
     	finOutput="AWS USER INFO"$'\n'"----------------------------"$'\n'"User Account: $createOutput"$'\n'"Console User Info: $conOutput"$'\n'"Console Pass: $upassword"$'\n'"CLI User Access Key/Secret Key: $progOutput"
 			destFile=~/Desktop/iam_script/"$uname".txt
 			echo "$finOutput"
